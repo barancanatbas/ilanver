@@ -14,8 +14,9 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(*config.JwtCustom)
 
+		userlogin := claims.User
 		// vt kontrolü
-		_, err := repository.Get().User().Login(claims.User)
+		err := repository.Get().User().Login(&userlogin)
 		if err != nil {
 			return c.JSON(200, "Bilinmeyen bir hata oluştu")
 		}

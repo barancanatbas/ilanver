@@ -16,7 +16,7 @@ func (rootRepo *Repositories) User() UserRepo {
 
 // login..
 func (u UserRepo) Login(user *models.User) error {
-	err := u.db.Debug().Model(&models.User{}).Preload("UserDetail").Where("phone = ?", user.Phone).Take(&user).Error
+	err := u.db.Model(&models.User{}).Preload("UserDetail.Adress.District.Province").Where("phone = ?", user.Phone).Take(&user).Error
 	return err
 }
 
@@ -26,6 +26,7 @@ func (u UserRepo) Register(user models.User) error {
 	return err.Error
 }
 
+// exists phone ?
 func (u UserRepo) ExistsPhone(phone string) bool {
 	err := u.db.Model(&models.User{}).Where("phone = ?", phone)
 	if err.Error != nil {
