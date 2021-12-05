@@ -3,6 +3,7 @@ package helpers
 import (
 	config "ilanver/internal/configs"
 	"ilanver/internal/models"
+	"net/http"
 	"strings"
 
 	"github.com/go-playground/locales/en"
@@ -13,7 +14,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Validator(c *echo.Context, requestRules interface{}) string {
+func Validator(c *echo.Context, requestRules interface{}) error {
 	var (
 		uni   *ut.UniversalTranslator
 		trans ut.Translator
@@ -28,7 +29,7 @@ func Validator(c *echo.Context, requestRules interface{}) string {
 	_ = (*c).Bind(requestRules)
 	err := validate.Struct(requestRules)
 	if err == nil {
-		return ""
+		return err
 	}
 
 	translateErrors := err.(validator.ValidationErrors).Translate(trans)
@@ -43,7 +44,8 @@ func Validator(c *echo.Context, requestRules interface{}) string {
 		}
 		translateErrorsString += ", "
 	}
-	return translateErrorsString
+	_ = (*c).JSON(http.StatusBadRequest, Response(nil, translateErrorsString))
+	return err
 
 }
 

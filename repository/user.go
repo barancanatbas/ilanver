@@ -15,9 +15,9 @@ func (rootRepo *Repositories) User() UserRepo {
 }
 
 // login..
-func (u UserRepo) Login(user models.User) (models.User, error) {
-	err := u.db.Model(&models.User{}).Where("id = ? and phone = ?", user.ID, user.Phone).Take(&user).Error
-	return user, err
+func (u UserRepo) Login(user *models.User) error {
+	err := u.db.Model(&models.User{}).Preload("UserDetails").Where("phone = ?", user.Phone).Take(&user).Error
+	return err
 }
 
 // register new user..

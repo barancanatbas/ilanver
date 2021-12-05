@@ -1,0 +1,79 @@
+definitions:
+  request.UserLogin:
+    properties:
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - password
+    - phone
+    type: object
+  request.UserRegister:
+    properties:
+      birthday:
+        type: string
+      description:
+        type: string
+      districtfk:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      surname:
+        type: string
+    required:
+    - birthday
+    - description
+    - districtfk
+    - email
+    - name
+    - password
+    - phone
+    - surname
+    type: object
+host: petstore.sw
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /Login:
+    post:
+      description: Üyelerin giriş yapmasını sağlar
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/request.UserLogin'
+      summary: Login
+      tags:
+      - user
+  /register:
+    post:
+      description: Üyelerin kayıt yapmasını sağlar adres bilgisini kayıt eder, user
+        detay bilgilerini kayıt eder.
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/request.UserRegister'
+      summary: Login
+      tags:
+      - user
+swagger: "2.0"

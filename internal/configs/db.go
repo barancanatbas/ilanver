@@ -71,7 +71,6 @@ func AutoMigrate() *gorm.DB {
 	Database.Model(&models.Adress{}).AddForeignKey("districtfk", "districts(id)", "cascade", "cascade")
 
 	// tbl user detail = user bilgilerinin detaylarını tutar
-	Database.Model(&models.UserDetail{}).AddForeignKey("photofk", "photos(id)", "cascade", "cascade")
 	Database.Model(&models.UserDetail{}).AddForeignKey("adressfk", "adresses(id)", "cascade", "cascade")
 
 	// tbl user = user bilgilerini tutar

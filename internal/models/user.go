@@ -7,7 +7,7 @@ type User struct {
 	Name         string     `json:"name"`
 	Surname      string     `json:"surname"`
 	Phone        string     `json:"phone"`
-	Password     string     `json:"password"`
+	Password     string     `json:"-"`
 	Email        string     `json:"email"`
 	UserDetail   UserDetail `gorm:"column:userdetailfk" json:"user_detail"`
 	UserDetailfk uint       `gorm:"foreignkey:userdetailfk" json:"user_detailfk"`
