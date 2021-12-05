@@ -6,4 +6,5 @@ type Category struct {
 	gorm.Model
 	CategoryName string
 	MainCategory uint
+	Src          string
 }
