@@ -74,7 +74,7 @@ func AutoMigrate() *gorm.DB {
 	Database.Model(&models.UserDetail{}).AddForeignKey("adressfk", "adresses(id)", "cascade", "cascade")
 
 	// tbl user = user bilgilerini tutar
-	Database.Model(&models.User{}).AddForeignKey("user_detailfk", "user_details(id)", "cascade", "cascade")
+	Database.Model(&models.User{}).AddForeignKey("userdetailfk", "user_details(id)", "cascade", "cascade")
 
 	// tbl lostpassword = şifremi unuttum alanı ile ilgili
 	Database.Model(&models.LostPassword{}).AddForeignKey("userfk", "users(id)", "cascade", "cascade")
