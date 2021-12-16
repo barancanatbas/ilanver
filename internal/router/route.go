@@ -24,5 +24,6 @@ func RouteInit(e *echo.Echo) {
 	admincategory := admin.Group("")
 
 	admincategory.POST("/category", category.Insert)
+	admincategory.PUT("/category", category.Update)
 	e.Start(":8080")
 }

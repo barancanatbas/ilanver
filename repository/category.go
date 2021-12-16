@@ -14,12 +14,20 @@ func (repo *Repositories) Category() CategoryRepo {
 	return CategoryRepo{db: repo.Db}
 }
 
-func (ct CategoryRepo) Exists(id uint) bool {
-	val := ct.db.Model(&models.Category{}).Where("id = ?", id).Take(&models.Category{})
+func (ct CategoryRepo) Exists(id uint) (models.Category, error) {
+	category := models.Category{}
+	val := ct.db.Model(&models.Category{}).Where("id = ?", id).Take(&category)
 	if val.RowsAffected > 0 {
-		return true
+		return category, val.Error
 	}
-	return false
+	return category, nil
+}
+
+func (ct CategoryRepo) ExistsMain(main_category_id uint) (models.Category, error) {
+	category := models.Category{}
+	err := ct.db.Model(&models.Category{}).
+		Where("main_category = ?", main_category_id).Find(&category).Error
+	return category, err
 }
 
 func (ct CategoryRepo) Insert(category *models.Category) error {
@@ -33,4 +41,9 @@ func (ct CategoryRepo) MainCategory() ([]models.Category, error) {
 	val := ct.db.Model(&models.Category{}).Where("main_category = ?", 0).Find(&categorys)
 
 	return categorys, val.Error
+}
+
+func (ct CategoryRepo) Update(category *models.Category) error {
+	err := ct.db.Save(&category).Error
+	return err
 }
