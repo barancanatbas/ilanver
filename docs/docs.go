@@ -51,6 +51,68 @@ var doc = `{
                 ]
             }
         },
+        "/category": {
+            "put": {
+                "description": "var olan kategoriyi günceller",
+                "tags": [
+                    "category"
+                ],
+                "summary": "update Category",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/request.CategoryUpdate"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "description": "yeni kategory ekler",
+                "tags": [
+                    "category"
+                ],
+                "summary": "Insert Category",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/request.CategoryInsert"
+                        }
+                    }
+                ]
+            },
+            "delete": {
+                "description": "Var olan kategori bilgilerini siler.",
+                "tags": [
+                    "category"
+                ],
+                "summary": "Delete Category",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/request.CategoryDelete"
+                        }
+                    }
+                ]
+            }
+        },
+        "/category/main": {
+            "get": {
+                "description": "root kategorileri getirir.",
+                "tags": [
+                    "category"
+                ],
+                "summary": "Main Categories"
+            }
+        },
         "/register": {
             "post": {
                 "description": "Üyelerin kayıt yapmasını sağlar adres bilgisini kayıt eder, user detay bilgilerini kayıt eder.",
@@ -72,6 +134,49 @@ var doc = `{
         }
     },
     "definitions": {
+        "request.CategoryDelete": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.CategoryInsert": {
+            "type": "object",
+            "required": [
+                "category_name"
+            ],
+            "properties": {
+                "category_name": {
+                    "type": "string"
+                },
+                "main_category_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.CategoryUpdate": {
+            "type": "object",
+            "required": [
+                "category_name",
+                "id"
+            ],
+            "properties": {
+                "category_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "main_category_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.UserLogin": {
             "type": "object",
             "required": [

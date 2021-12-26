@@ -1,4 +1,32 @@
 definitions:
+  request.CategoryDelete:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  request.CategoryInsert:
+    properties:
+      category_name:
+        type: string
+      main_category_id:
+        type: integer
+    required:
+    - category_name
+    type: object
+  request.CategoryUpdate:
+    properties:
+      category_name:
+        type: string
+      id:
+        type: integer
+      main_category_id:
+        type: integer
+    required:
+    - category_name
+    - id
+    type: object
   request.UserLogin:
     properties:
       password:
@@ -63,6 +91,46 @@ paths:
       summary: Login
       tags:
       - user
+  /category:
+    delete:
+      description: Var olan kategori bilgilerini siler.
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/request.CategoryDelete'
+      summary: Delete Category
+      tags:
+      - category
+    post:
+      description: yeni kategory ekler
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/request.CategoryInsert'
+      summary: Insert Category
+      tags:
+      - category
+    put:
+      description: var olan kategoriyi günceller
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/request.CategoryUpdate'
+      summary: update Category
+      tags:
+      - category
+  /category/main:
+    get:
+      description: root kategorileri getirir.
+      summary: Main Categories
+      tags:
+      - category
   /register:
     post:
       description: Üyelerin kayıt yapmasını sağlar adres bilgisini kayıt eder, user

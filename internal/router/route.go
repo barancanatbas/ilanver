@@ -15,15 +15,15 @@ func RouteInit(e *echo.Echo) {
 
 	e.POST("/login", user.Login)
 	e.POST("/register", user.Register)
-	e.GET("/category/main", category.MainCategory)
 
 	admin := e.Group("")
 	admin.Use(middleware.JWTWithConfig(config.JWTConfig))
 	admin.Use(_mware.Auth)
 
 	admincategory := admin.Group("")
-
+	e.GET("/category/main", category.MainCategory)
 	admincategory.POST("/category", category.Insert)
 	admincategory.PUT("/category", category.Update)
+	admincategory.DELETE("/category", category.Delete)
 	e.Start(":8080")
 }

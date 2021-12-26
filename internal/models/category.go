@@ -5,6 +5,6 @@ import "github.com/jinzhu/gorm"
 type Category struct {
 	gorm.Model
 	CategoryName string
-	MainCategory uint
+	MainCategory uint `gorm:"column:maincategory;default:null"`
 	Src          string
 }

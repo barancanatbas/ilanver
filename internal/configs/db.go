@@ -86,5 +86,7 @@ func AutoMigrate() *gorm.DB {
 	Database.Model(&models.ProductDetail{}).AddForeignKey("adressfk", "adresses(id)", "cascade", "cascade")
 	Database.Model(&models.ProductDetail{}).AddForeignKey("categoryfk", "categories(id)", "cascade", "cascade")
 
+	Database.Model(&models.Category{}).AddForeignKey("maincategory", "categories(id)", "CASCADE", "CASCADE")
+
 	return migrate
 }
