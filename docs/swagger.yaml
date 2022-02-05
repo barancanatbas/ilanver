@@ -65,6 +65,23 @@ definitions:
     - phone
     - surname
     type: object
+  request.UserUpdate:
+    properties:
+      birthday:
+        type: string
+      description:
+        type: string
+      districtfk:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      surname:
+        type: string
+    type: object
 host: petstore.sw
 info:
   contact:
@@ -141,7 +158,19 @@ paths:
         name: body
         schema:
           $ref: '#/definitions/request.UserRegister'
-      summary: Login
+      summary: Register
+      tags:
+      - user
+  /user/update:
+    put:
+      description: üyenin bilgilerini günceller
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/request.UserUpdate'
+      summary: Update
       tags:
       - user
 swagger: "2.0"

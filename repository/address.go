@@ -18,3 +18,13 @@ func (a AddressRepo) Save(adres *models.Adress) error {
 	err := a.db.Model(&models.Adress{}).Save(&adres)
 	return err.Error
 }
+
+func (a AddressRepo) ExistsDistric(district uint) bool {
+	err := a.db.Model(&models.District{}).Where("id = ?", district)
+	if err.Error != nil {
+		return true
+	} else if err.RowsAffected > 0 {
+		return true
+	}
+	return false
+}

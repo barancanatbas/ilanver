@@ -119,7 +119,7 @@ var doc = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Login",
+                "summary": "Register",
                 "parameters": [
                     {
                         "description": " ",
@@ -127,6 +127,25 @@ var doc = `{
                         "in": "body",
                         "schema": {
                             "$ref": "#/definitions/request.UserRegister"
+                        }
+                    }
+                ]
+            }
+        },
+        "/user/update": {
+            "put": {
+                "description": "üyenin bilgilerini günceller",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/request.UserUpdate"
                         }
                     }
                 ]
@@ -221,6 +240,32 @@ var doc = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UserUpdate": {
+            "type": "object",
+            "properties": {
+                "birthday": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "districtfk": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "phone": {

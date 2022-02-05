@@ -116,5 +116,5 @@ func Delete(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helpers.Response(nil, "kategori silinemedi"))
 	}
 
-	return c.JSON(http.StatusBadRequest, helpers.Response(nil, "kategori bulunamadı"))
+	return c.JSON(http.StatusBadRequest, helpers.Response(nil, "kategori başarılı ile silindi."))
 }

@@ -57,7 +57,7 @@ func (ct CategoryRepo) SubCategory(main_category_id uint) ([]models.Category, er
 }
 
 func (ct CategoryRepo) Delete(category models.Category) error {
-	err := ct.db.Debug().Where("id = ?", category.ID).Unscoped().Delete(&models.Category{})
+	err := ct.db.Where("id = ?", category.ID).Unscoped().Delete(&models.Category{})
 
 	return err.Error
 }

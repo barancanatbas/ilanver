@@ -26,9 +26,22 @@ func (u UserRepo) Register(user models.User) error {
 	return err.Error
 }
 
+func (u UserRepo) Update(user models.User) error {
+	err := u.db.Save(&user).Error
+	return err
+}
+
 // exists phone ?
-func (u UserRepo) ExistsPhone(phone string) bool {
-	err := u.db.Model(&models.User{}).Where("phone = ?", phone)
+func (u UserRepo) ExistsPhone(phone string, userid uint) bool {
+	err := u.db.Model(&models.User{}).Where("phone = ?", phone).Where("id != ?", userid).Find(&models.User{})
+	if err.RowsAffected > 0 {
+		return true
+	}
+	return false
+}
+
+func (u UserRepo) ExistsEmail(email string, userid uint) bool {
+	err := u.db.Model(&models.User{}).Where("email = ?", email).Where("id != ?", userid).Find(&models.User{})
 	if err.Error != nil {
 		return true
 	} else if err.RowsAffected > 0 {

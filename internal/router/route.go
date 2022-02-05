@@ -25,5 +25,8 @@ func RouteInit(e *echo.Echo) {
 	admincategory.POST("/category", category.Insert)
 	admincategory.PUT("/category", category.Update)
 	admincategory.DELETE("/category", category.Delete)
+
+	adminUser := admin.Group("")
+	adminUser.PUT("/user/update", user.Update)
 	e.Start(":8080")
 }
