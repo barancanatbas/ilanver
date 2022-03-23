@@ -25,7 +25,6 @@ func NewUserDetailRepository(tx *gorm.DB) UserDetailRepo {
 }
 
 func (u UserDetailRepo) Save(detail *model.UserDetail) error {
-
 	err := u.tx.Save(detail).Error
 
 	return err
