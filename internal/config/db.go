@@ -26,6 +26,9 @@ func Init() {
 	}
 
 	DB = db
+
+	Pool = newPool()
+	//cleanupHook()
 }
 
 func Migrate() {
