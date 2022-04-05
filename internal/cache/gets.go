@@ -49,3 +49,13 @@ func GetFromCacheString(key string) (string, bool) {
 
 	return string(value), true
 }
+
+func GetFromCacheInt(key string) (int, bool) {
+	var client = config.Pool.Get()
+	defer client.Close()
+	value, err := redis.Int(client.Do("get", key))
+	if err != nil {
+		return 0, false
+	}
+	return value, true
+}
