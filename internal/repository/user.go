@@ -8,7 +8,8 @@ import (
 
 type IUserRepo interface {
 	Login(phone string) (model.User, error)
-	Save(user *model.User) error
+	Save(user *model.User, tx *gorm.DB) error
+	Update(user *model.User) error
 	Get(id uint) (model.User, error)
 }
 
@@ -16,11 +17,8 @@ type UserRepo struct {
 	tx *gorm.DB
 }
 
-// Compile time checks to ensure your type satisfies an interface
-var _ IUserRepo = UserRepo{}
-
-func NewUserRepository(tx *gorm.DB) UserRepo {
-	return UserRepo{
+func NewUserRepository(tx *gorm.DB) IUserRepo {
+	return &UserRepo{
 		tx: tx,
 	}
 }
@@ -33,7 +31,13 @@ func (u UserRepo) Login(phone string) (model.User, error) {
 
 }
 
-func (u UserRepo) Save(user *model.User) error {
+func (u UserRepo) Save(user *model.User, tx *gorm.DB) error {
+	err := tx.Save(user).Error
+
+	return err
+}
+
+func (u UserRepo) Update(user *model.User) error {
 	err := u.tx.Save(user).Error
 
 	return err

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"ilanver/internal/config"
 	"ilanver/internal/model"
 	"ilanver/internal/repository"
@@ -19,18 +20,20 @@ type IUserService interface {
 }
 
 type UserService struct {
-	RepoUser       repository.UserRepo
-	RepoAddress    repository.AddressRepo
+	Repository     repository.IRepository
+	RepoUser       repository.IUserRepo
+	RepoAddress    repository.IAddressRepo
 	RepoUserDetail repository.IUserDetailRepo
 }
 
 var _ IUserService = UserService{}
 
-func NewUserService(repoUser repository.UserRepo, repoAddress repository.AddressRepo, repoDetail repository.IUserDetailRepo) UserService {
+func NewUserService(repoUser repository.IUserRepo, repoAddress repository.IAddressRepo, repoDetail repository.IUserDetailRepo, repository repository.IRepository) IUserService {
 	return UserService{
 		RepoUser:       repoUser,
 		RepoAddress:    repoAddress,
 		RepoUserDetail: repoDetail,
+		Repository:     repository,
 	}
 }
 
@@ -71,8 +74,13 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 		Detail:     req.Description,
 	}
 
-	err := s.RepoAddress.Save(&address)
+	// create transaction for mysql
+	tx := s.Repository.CreateTX()
+
+	err := s.RepoAddress.Save(&address, tx)
 	if err != nil {
+		fmt.Println("girdi 1")
+		s.Repository.RollBack()
 		return model.User{}, err
 	}
 
@@ -80,8 +88,10 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 		Adressfk: address.ID,
 	}
 
-	err = s.RepoUserDetail.Save(&userDetail)
+	err = s.RepoUserDetail.Save(&userDetail, tx)
 	if err != nil {
+		fmt.Println("girdi 2")
+		s.Repository.RollBack()
 		return model.User{}, err
 	}
 	date, _ := time.Parse("02.01.2006", req.Birthday)
@@ -99,9 +109,15 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 
 	user.Password = string(password)
 
-	err = s.RepoUser.Save(&user)
+	err = s.RepoUser.Save(&user, tx)
+	if err != nil {
+		fmt.Println("girdi 3")
+		s.Repository.RollBack()
+		return model.User{}, err
+	}
+	s.Repository.Commit()
 
-	return user, err
+	return user, nil
 }
 
 func (s UserService) Update(req request.UserUpdate) error {
@@ -118,6 +134,6 @@ func (s UserService) Update(req request.UserUpdate) error {
 	bDate, _ := time.Parse("02.01.2006", req.Birthday)
 	user.Birthday = bDate
 
-	err = s.RepoUser.Save(&user)
+	err = s.RepoUser.Update(&user)
 	return err
 }

@@ -15,12 +15,12 @@ type IUserHandler interface {
 }
 
 type UserHandler struct {
-	Service service.UserService
+	Service service.IUserService
 }
 
 var _ IUserHandler = UserHandler{}
 
-func NewUserHandler(service service.UserService) UserHandler {
+func NewUserHandler(service service.IUserService) IUserHandler {
 	return UserHandler{
 		Service: service,
 	}

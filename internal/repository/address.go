@@ -7,7 +7,7 @@ import (
 )
 
 type IAddressRepo interface {
-	Save(address *model.Adress) error
+	Save(address *model.Adress, tx *gorm.DB) error
 	GetByID(id uint) (model.Adress, error)
 }
 
@@ -15,17 +15,14 @@ type AddressRepo struct {
 	tx *gorm.DB
 }
 
-// Compile time checks to ensure your type satisfies an interface
-var _ IAddressRepo = AddressRepo{}
-
-func NewAddressRepository(tx *gorm.DB) AddressRepo {
-	return AddressRepo{
+func NewAddressRepository(tx *gorm.DB) IAddressRepo {
+	return &AddressRepo{
 		tx: tx,
 	}
 }
 
-func (a AddressRepo) Save(address *model.Adress) error {
-	err := a.tx.Save(address).Error
+func (a AddressRepo) Save(address *model.Adress, tx *gorm.DB) error {
+	err := tx.Save(address).Error
 
 	return err
 }
