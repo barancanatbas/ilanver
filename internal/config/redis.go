@@ -13,7 +13,7 @@ var (
 	Pool *redis.Pool
 )
 
-func newPool() *redis.Pool {
+func NewPool() *redis.Pool {
 	return &redis.Pool{
 
 		MaxIdle:     3,

@@ -27,7 +27,7 @@ func Init() {
 
 	DB = db
 
-	Pool = newPool()
+	Pool = NewPool()
 	//cleanupHook()
 }
 

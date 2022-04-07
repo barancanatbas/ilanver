@@ -1,6 +1,7 @@
 package repositorytest
 
 import (
+	"ilanver/internal/cache"
 	"ilanver/internal/config"
 	"ilanver/internal/model"
 	"ilanver/internal/repository"
@@ -43,7 +44,7 @@ func TestInsertUser(t *testing.T) {
 	user := model.User{
 		Name:         "test name",
 		Surname:      "test surname",
-		Phone:        "555555",
+		Phone:        "5551551",
 		Password:     "test",
 		Email:        "baran@gmail.com",
 		UserDetailfk: detail.ID,
@@ -156,4 +157,25 @@ func TestGetByIDUser(t *testing.T) {
 
 	assert.Equal(t, err, nil)
 	assert.Equal(t, getUser.ID, user.ID)
+}
+
+func TestChangePasswordCode(t *testing.T) {
+
+	config.Pool = config.NewPool()
+
+	cache.SetHashCache("lostPassword:55555555", map[string]string{
+		"code":    "1212",
+		"phone":   "55555555",
+		"ip":      ":1",
+		"confirm": "false",
+	})
+
+	if !cache.Exists("lostPassword:55555555") {
+		t.Error("cache not exists")
+	}
+
+	cacheData := cache.GetHashCache("lostPassword:55555555")
+
+	assert.Equal(t, cacheData["code"], "1212")
+	assert.Equal(t, cacheData["phone"], "55555555")
 }

@@ -1,9 +1,9 @@
 package user
 
 import (
-	handler "ilanver/internal/handler/handler_user"
+	handler "ilanver/internal/handler"
 	"ilanver/internal/repository"
-	service "ilanver/internal/service/service_user"
+	service "ilanver/internal/service"
 
 	"gorm.io/gorm"
 )

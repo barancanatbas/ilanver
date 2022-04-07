@@ -16,7 +16,7 @@ func Limitter() gin.HandlerFunc {
 		ip := c.ClientIP()
 		if val, exists := cache.GetFromCacheInt(ip); exists {
 			fmt.Println("ip: ", ip, " val: ", val)
-			if val >= 5 {
+			if val >= 200 {
 
 				c.JSON(429, &APIError{Code: 429, Message: "Too many requests"})
 				c.AbortWithStatus(429)

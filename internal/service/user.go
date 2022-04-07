@@ -3,13 +3,17 @@ package service
 import (
 	"errors"
 	"fmt"
+	"ilanver/internal/cache"
 	"ilanver/internal/config"
+	"ilanver/internal/helpers"
 	"ilanver/internal/model"
 	"ilanver/internal/repository"
 	"ilanver/request"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,6 +21,9 @@ type IUserService interface {
 	Login(req request.UserLogin) (model.User, string, error)
 	Register(req request.UserRegister) (model.User, error)
 	Update(req request.UserUpdate) error
+	LostPassword(c *gin.Context, req request.UserLostPassword) error
+	ChangePasswordForCode(c *gin.Context, req request.UserChangePasswordForCode) error
+	ChangePassword(c *gin.Context, req request.UserChangePassword) error
 }
 
 type UserService struct {
@@ -25,8 +32,6 @@ type UserService struct {
 	RepoAddress    repository.IAddressRepo
 	RepoUserDetail repository.IUserDetailRepo
 }
-
-var _ IUserService = UserService{}
 
 func NewUserService(repoUser repository.IUserRepo, repoAddress repository.IAddressRepo, repoDetail repository.IUserDetailRepo, repository repository.IRepository) IUserService {
 	return UserService{
@@ -77,7 +82,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 	// create transaction for mysql
 	tx := s.Repository.CreateTX()
 
-	err := s.RepoAddress.Save(&address, tx)
+	err := s.RepoAddress.WitchTX(tx).Save(&address)
 	if err != nil {
 		fmt.Println("girdi 1")
 		s.Repository.RollBack()
@@ -88,7 +93,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 		Adressfk: address.ID,
 	}
 
-	err = s.RepoUserDetail.Save(&userDetail, tx)
+	err = s.RepoUserDetail.WitchTX(tx).Save(&userDetail)
 	if err != nil {
 		fmt.Println("girdi 2")
 		s.Repository.RollBack()
@@ -109,7 +114,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 
 	user.Password = string(password)
 
-	err = s.RepoUser.Save(&user, tx)
+	err = s.RepoUser.WitchTX(tx).Save(&user)
 	if err != nil {
 		fmt.Println("girdi 3")
 		s.Repository.RollBack()
@@ -136,4 +141,80 @@ func (s UserService) Update(req request.UserUpdate) error {
 
 	err = s.RepoUser.Update(&user)
 	return err
+}
+
+func (s UserService) LostPassword(c *gin.Context, req request.UserLostPassword) error {
+
+	code := helpers.RandNumber(1000, 9999)
+	ip := c.ClientIP()
+
+	key := "lostPassword:" + req.Phone
+
+	// burada bir mail veya sms gönderildiğini düşünülebilir
+
+	cache.SetHashCache(key, map[string]string{
+		"code":    strconv.Itoa(code),
+		"phone":   req.Phone,
+		"ip":      ip,
+		"confirm": "false",
+	})
+
+	return nil
+}
+
+func (s UserService) ChangePasswordForCode(c *gin.Context, req request.UserChangePasswordForCode) error {
+
+	key := "lostPassword:" + req.Phone
+	ip := c.ClientIP()
+
+	if !cache.Exists(key) {
+		return errors.New("Lütfen kayıtlı bir kodunuzu giriniz")
+	}
+
+	data := cache.GetHashCache(key)
+
+	if data["code"] != req.Code {
+		return errors.New("kod doğrulanmadı")
+	}
+
+	if data["ip"] != ip {
+		return errors.New("kod doğrulanmadı")
+	}
+
+	password, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 4)
+
+	user, err := s.RepoUser.GetByPhone(req.Phone)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(password)
+
+	err = s.RepoUser.Update(&user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s UserService) ChangePassword(c *gin.Context, req request.UserChangePassword) error {
+
+	auth := helpers.AuthUser
+
+	user, err := s.RepoUser.Get(auth.ID)
+	if err != nil {
+		return err
+	}
+
+	password, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 4)
+
+	user.Password = string(password)
+
+	err = s.RepoUser.Update(&user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -25,17 +25,17 @@ func GetFromCache(key string, list interface{}) bool { // testler bittikten sonr
 	return true
 }
 
-func GetHashCache(key string) (map[string]string, bool) {
+func GetHashCache(key string) map[string]string {
 	fmt.Println("girdi")
 	var client = config.Pool.Get()
 	defer client.Close()
 	value, err := redis.StringMap(client.Do("HGETALL", key))
 
 	if err != nil {
-		return make(map[string]string, 0), false
+		return make(map[string]string, 0)
 	}
 	fmt.Println("value : ", value)
-	return value, true
+	return value
 }
 
 func GetFromCacheString(key string) (string, bool) {

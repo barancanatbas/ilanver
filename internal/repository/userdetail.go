@@ -7,8 +7,9 @@ import (
 )
 
 type IUserDetailRepo interface {
-	Save(detail *model.UserDetail, tx *gorm.DB) error
+	Save(detail *model.UserDetail) error
 	GetByID(id uint) (model.UserDetail, error)
+	WitchTX(db *gorm.DB) IUserDetailRepo
 }
 
 type UserDetailRepo struct {
@@ -21,8 +22,14 @@ func NewUserDetailRepository(tx *gorm.DB) IUserDetailRepo {
 	}
 }
 
-func (u UserDetailRepo) Save(detail *model.UserDetail, tx *gorm.DB) error {
-	err := tx.Save(detail).Error
+func (u UserDetailRepo) WitchTX(db *gorm.DB) IUserDetailRepo {
+	u.tx = db
+
+	return u
+}
+
+func (u UserDetailRepo) Save(detail *model.UserDetail) error {
+	err := u.tx.Save(detail).Error
 
 	return err
 }

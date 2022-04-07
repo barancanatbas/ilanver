@@ -26,3 +26,17 @@ type UserUpdate struct {
 	// Districtfk  uint   `validate:"omitempty" json:"districtfk"`
 	// Description string `validate:"omitempty" json:"description"`
 }
+
+type UserLostPassword struct {
+	Phone string `validate:"required" json:"phone"`
+}
+
+type UserChangePasswordForCode struct {
+	Phone    string `validate:"required" json:"phone"`
+	Code     string `validate:"required" json:"code"`
+	Password string `validate:"required" json:"password"`
+}
+
+type UserChangePassword struct {
+	Password string `validate:"required" json:"password"`
+}

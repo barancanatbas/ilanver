@@ -13,6 +13,7 @@ func main() {
 	config.Migrate()
 	r := gin.Default()
 	r.Use(middleware.Limitter())
+
 	router.Init(config.DB, r)
 
 	r.Run()
