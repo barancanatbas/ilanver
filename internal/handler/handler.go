@@ -120,7 +120,7 @@ func (h UserHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.ChangePassword(c, req)
+	err := h.Service.ChangePassword(req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

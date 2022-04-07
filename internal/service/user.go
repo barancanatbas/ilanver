@@ -23,7 +23,7 @@ type IUserService interface {
 	Update(req request.UserUpdate) error
 	LostPassword(c *gin.Context, req request.UserLostPassword) error
 	ChangePasswordForCode(c *gin.Context, req request.UserChangePasswordForCode) error
-	ChangePassword(c *gin.Context, req request.UserChangePassword) error
+	ChangePassword(req request.UserChangePassword) error
 }
 
 type UserService struct {
@@ -198,7 +198,7 @@ func (s UserService) ChangePasswordForCode(c *gin.Context, req request.UserChang
 	return nil
 }
 
-func (s UserService) ChangePassword(c *gin.Context, req request.UserChangePassword) error {
+func (s UserService) ChangePassword(req request.UserChangePassword) error {
 
 	auth := helpers.AuthUser
 
