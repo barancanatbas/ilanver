@@ -41,7 +41,7 @@ func TestUserRegister(t *testing.T) {
 	service := service.NewUserService(repoUser, repoAddress, repoDetail, repository)
 
 	user, err := service.Register(request.UserRegister{
-		Phone:       "1555555555",
+		Phone:       "1355555555",
 		Password:    "12345678",
 		Name:        "test",
 		Surname:     "test",
@@ -51,7 +51,7 @@ func TestUserRegister(t *testing.T) {
 		Description: "test",
 	})
 
-	assert.Equal(t, user.Phone, "1555555555")
+	assert.Equal(t, user.Phone, "1355555555")
 	assert.Equal(t, err, nil)
 	assert.Equal(t, user.Name, "test")
 	assert.Equal(t, user.Surname, "test")
@@ -89,6 +89,7 @@ func TestUserUpdate(t *testing.T) {
 		ID:       user.ID,
 		Name:     "test2",
 		Surname:  "test2",
+		Phone:    "1155555555",
 		Email:    "a@gmail.com",
 		Birthday: "01.01.2001",
 	})

@@ -2,6 +2,7 @@ package router
 
 import (
 	"ilanver/internal/api/address"
+	"ilanver/internal/api/category"
 	"ilanver/internal/api/user"
 	"ilanver/internal/middleware"
 
@@ -12,6 +13,7 @@ import (
 func Init(tx *gorm.DB, router *gin.Engine) {
 	userHandler := user.Init(tx)
 	addressHandler := address.Init(tx)
+	categoryHandler := category.Init(tx)
 
 	router.POST("/login", userHandler.Login)
 	router.POST("/register", userHandler.Register)
@@ -20,8 +22,16 @@ func Init(tx *gorm.DB, router *gin.Engine) {
 
 	auth := router.Use(middleware.JWTAuthMiddleware(false, "secret"))
 
+	// user routes
 	auth.PUT("/user", userHandler.Update)
 	auth.PUT("/user/address", addressHandler.Update)
 	auth.PUT("/user/password", userHandler.ChangePassword)
+
+	// category routes
+	auth.GET("/categories", categoryHandler.GetAll)
+	auth.GET("/categories/:id/sub", categoryHandler.GetSubCategories)
+	auth.POST("/categories", categoryHandler.Insert)
+	auth.PUT("/categories/:id", categoryHandler.Update)
+	auth.DELETE("/categories/:id", categoryHandler.Delete)
 
 }
