@@ -45,7 +45,7 @@ func (h *CategoryHandler) GetSubCategories(c *gin.Context) {
 		c.JSON(500, err)
 		return
 	}
-	c.JSON(200, categories)
+	c.JSON(200, helpers.BasicReturn(200, categories))
 }
 
 func (h *CategoryHandler) Insert(c *gin.Context) {
@@ -60,7 +60,7 @@ func (h *CategoryHandler) Insert(c *gin.Context) {
 		c.JSON(500, err)
 		return
 	}
-	c.JSON(201, category)
+	c.JSON(201, helpers.BasicReturn(200, "ekleme işlemi başarılı"))
 }
 
 func (h *CategoryHandler) Update(c *gin.Context) {
@@ -75,7 +75,7 @@ func (h *CategoryHandler) Update(c *gin.Context) {
 		c.JSON(500, err)
 		return
 	}
-	c.JSON(200, category)
+	c.JSON(200, helpers.BasicReturn(200, "güncelleme işlemi başarılı"))
 }
 
 func (h *CategoryHandler) Delete(c *gin.Context) {
@@ -85,5 +85,5 @@ func (h *CategoryHandler) Delete(c *gin.Context) {
 		c.JSON(500, err)
 		return
 	}
-	c.JSON(200, nil)
+	c.JSON(200, helpers.BasicReturn(200, "silme işlemi başarılı"))
 }

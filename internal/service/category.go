@@ -67,12 +67,31 @@ func (c CategoryService) Update(req request.UpdateCategory) error {
 func (c CategoryService) Delete(id string) error {
 	// TODO: burada silme işlemi yapılacak fakat alt kategorilerin silinmesi gerekiyor.
 
-	// idInt,err := strconv.Atoi(id)
+	idInt, err := strconv.Atoi(id)
 
-	// if err != nil {
-	// 	return err
-	// }
+	if err != nil {
+		return err
+	}
 
-	// return c.repository.Delete(id)
-	return nil
+	ids := findDeletedCategories(c.repoCategory, uint(idInt))
+	ids = append(ids, idInt)
+
+	err = c.repoCategory.DeleteWitchInQuery(ids)
+	return err
+}
+
+func findDeletedCategories(repo repository.ICategoryRepository, id uint) []int {
+	var ids []int
+	categories, _ := repo.GetSubCategories(id)
+
+	if len(categories) <= 0 {
+		return ids
+	}
+
+	for _, category := range categories {
+		ids = append(ids, int(category.ID))
+		ids = append(ids, findDeletedCategories(repo, category.ID)...)
+	}
+
+	return ids
 }
