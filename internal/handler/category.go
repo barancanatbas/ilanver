@@ -3,6 +3,7 @@ package handler
 import (
 	"ilanver/internal/helpers"
 	service "ilanver/internal/service"
+	"ilanver/pkg/logger"
 	"ilanver/request"
 
 	"github.com/gin-gonic/gin"
@@ -52,6 +53,7 @@ func (h *CategoryHandler) Insert(c *gin.Context) {
 	var category request.InsertCategory
 	err := c.BindJSON(&category)
 	if err != nil {
+		logger.Warnf(4, "category insert request error: %s", err.Error())
 		c.JSON(500, err)
 		return
 	}
@@ -67,6 +69,7 @@ func (h *CategoryHandler) Update(c *gin.Context) {
 	var category request.UpdateCategory
 	err := c.BindJSON(&category)
 	if err != nil {
+		logger.Warnf(4, "category update request error: %s", err.Error())
 		c.JSON(500, err)
 		return
 	}

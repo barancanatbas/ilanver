@@ -4,9 +4,11 @@ import "gorm.io/gorm"
 
 type Product struct {
 	gorm.Model
-	Title  string
-	User   User `gorm:"foreignkey:userfk" json:"user"`
-	Userfk uint `gorm:"column:userfk" json:"userfk"`
+	Title           string
+	User            User          `gorm:"foreignkey:userfk" json:"user"`
+	Userfk          uint          `gorm:"column:userfk" json:"userfk"`
+	ProductDetail   ProductDetail `gorm:"foreignkey:productdetailfk" json:"productdetail"`
+	ProductDetailfk uint          `gorm:"column:productdetailfk" json:"productdetailfk"`
 }
 
 type ProductDetail struct {

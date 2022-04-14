@@ -2,6 +2,7 @@ package handler
 
 import (
 	service "ilanver/internal/service"
+	"ilanver/pkg/logger"
 	"ilanver/request"
 	"net/http"
 
@@ -26,6 +27,7 @@ func (h AddressHandler) Update(c *gin.Context) {
 	var req request.UpdateAddress
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "AddressHandler.Update.JSON: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

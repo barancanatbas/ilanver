@@ -3,6 +3,7 @@ package router
 import (
 	"ilanver/internal/api/address"
 	"ilanver/internal/api/category"
+	"ilanver/internal/api/product"
 	"ilanver/internal/api/user"
 	"ilanver/internal/middleware"
 
@@ -14,6 +15,7 @@ func Init(tx *gorm.DB, router *gin.Engine) {
 	userHandler := user.Init(tx)
 	addressHandler := address.Init(tx)
 	categoryHandler := category.Init(tx)
+	productHandler := product.Init(tx)
 
 	router.POST("/login", userHandler.Login)
 	router.POST("/register", userHandler.Register)
@@ -33,5 +35,7 @@ func Init(tx *gorm.DB, router *gin.Engine) {
 	auth.POST("/categories", categoryHandler.Insert)
 	auth.PUT("/categories/:id", categoryHandler.Update)
 	auth.DELETE("/categories/:id", categoryHandler.Delete)
+
+	auth.GET("/product/:id", productHandler.GetByID)
 
 }

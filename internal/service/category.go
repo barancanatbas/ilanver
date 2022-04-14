@@ -3,6 +3,7 @@ package service
 import (
 	"ilanver/internal/model"
 	"ilanver/internal/repository"
+	"ilanver/pkg/logger"
 	"ilanver/request"
 	"strconv"
 )
@@ -28,17 +29,28 @@ func NewCategoryService(repoCategory repository.ICategoryRepository, repository 
 }
 
 func (c CategoryService) GetAll(page string) (interface{}, error) {
+	categories, err := c.repoCategory.GetAll()
 
-	return c.repoCategory.GetAll()
+	if err != nil {
+		logger.Errorf(4, "CategoryService.GetAll: %v", err)
+	}
+
+	return categories, err
 }
 
 func (c CategoryService) GetSubCategories(id string) ([]model.Category, error) {
 	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		logger.Errorf(4, "CategoryService.GetSubCategories: %v", err)
+		return nil, err
+	}
+	subCategories, err := c.repoCategory.GetSubCategories(uint(idInt))
 
 	if err != nil {
-		return []model.Category{}, err
+		logger.Errorf(4, "CategoryService.GetSubCategories: %v", err)
 	}
-	return c.repoCategory.GetSubCategories(uint(idInt))
+
+	return subCategories, err
 }
 
 func (c CategoryService) Insert(req request.InsertCategory) error {
@@ -48,7 +60,9 @@ func (c CategoryService) Insert(req request.InsertCategory) error {
 	}
 
 	err := c.repoCategory.Insert(&data)
-
+	if err != nil {
+		logger.Errorf(4, "CategoryService.Insert: %v", err)
+	}
 	return err
 }
 
@@ -61,6 +75,10 @@ func (c CategoryService) Update(req request.UpdateCategory) error {
 
 	err = c.repoCategory.Update(category)
 
+	if err != nil {
+		logger.Errorf(4, "CategoryService.Update: %v", err)
+	}
+
 	return err
 }
 
@@ -68,8 +86,8 @@ func (c CategoryService) Delete(id string) error {
 	// TODO: burada silme işlemi yapılacak fakat alt kategorilerin silinmesi gerekiyor.
 
 	idInt, err := strconv.Atoi(id)
-
 	if err != nil {
+		logger.Errorf(4, "CategoryService.Delete: %v", err)
 		return err
 	}
 
@@ -77,6 +95,10 @@ func (c CategoryService) Delete(id string) error {
 	ids = append(ids, idInt)
 
 	err = c.repoCategory.DeleteWitchInQuery(ids)
+	if err != nil {
+		logger.Errorf(4, "CategoryService.Delete: %v", err)
+	}
+
 	return err
 }
 

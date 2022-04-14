@@ -2,6 +2,7 @@ package handler
 
 import (
 	service "ilanver/internal/service"
+	"ilanver/pkg/logger"
 	"ilanver/request"
 	"net/http"
 
@@ -31,6 +32,7 @@ func (h UserHandler) Login(c *gin.Context) {
 	var req request.UserLogin
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "Login request error: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -48,6 +50,7 @@ func (h UserHandler) Register(c *gin.Context) {
 	var req request.UserRegister
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "Register request error: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -65,6 +68,7 @@ func (h UserHandler) Update(c *gin.Context) {
 	var req request.UserUpdate
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "Update request error: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -82,6 +86,7 @@ func (h UserHandler) LostPasswordConfrim(c *gin.Context) {
 	var req request.UserLostPassword
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "LostPasswordConfrim request error: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -99,6 +104,7 @@ func (h UserHandler) ChangePasswordForCode(c *gin.Context) {
 	var req request.UserChangePasswordForCode
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "ChangePasswordForCode request error: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -116,6 +122,7 @@ func (h UserHandler) ChangePassword(c *gin.Context) {
 	var req request.UserChangePassword
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Warnf(4, "ChangePassword request error: %s", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

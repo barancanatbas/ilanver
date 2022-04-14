@@ -2,6 +2,7 @@ package service
 
 import (
 	"ilanver/internal/repository"
+	"ilanver/pkg/logger"
 	"ilanver/request"
 )
 
@@ -25,6 +26,7 @@ func (s *AddressService) Update(request request.UpdateAddress) error {
 
 	address, err := s.RepoAddress.GetByID(request.ID)
 	if err != nil {
+		logger.Errorf(4, "AddressService.Update: %s", err.Error())
 		return err
 	}
 
@@ -32,6 +34,9 @@ func (s *AddressService) Update(request request.UpdateAddress) error {
 	address.Detail = request.Detail
 
 	err = s.RepoAddress.Update(&address)
+	if err != nil {
+		logger.Errorf(4, "AddressService.Update: %s", err.Error())
+	}
 
 	return err
 }

@@ -2,12 +2,12 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"ilanver/internal/cache"
 	"ilanver/internal/config"
 	"ilanver/internal/helpers"
 	"ilanver/internal/model"
 	"ilanver/internal/repository"
+	"ilanver/pkg/logger"
 	"ilanver/request"
 	"strconv"
 	"time"
@@ -46,6 +46,7 @@ func (s UserService) Login(req request.UserLogin) (model.User, string, error) {
 
 	user, err := s.RepoUser.Login(req.Phone)
 	if err != nil {
+		logger.Errorf(4, "UserService.Login: %s", err.Error())
 		return model.User{}, "", err
 	}
 
@@ -66,6 +67,7 @@ func (s UserService) Login(req request.UserLogin) (model.User, string, error) {
 	Token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	t, err := Token.SignedString([]byte("secret"))
 	if err != nil {
+		logger.Errorf(4, "UserService.Login: %s", err.Error())
 		return model.User{}, "", err
 	}
 
@@ -84,7 +86,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 
 	err := s.RepoAddress.WitchTX(tx).Save(&address)
 	if err != nil {
-		fmt.Println("girdi 1")
+		logger.Errorf(4, "UserService.Register: %s", err.Error())
 		s.Repository.RollBack()
 		return model.User{}, err
 	}
@@ -95,7 +97,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 
 	err = s.RepoUserDetail.WitchTX(tx).Save(&userDetail)
 	if err != nil {
-		fmt.Println("girdi 2")
+		logger.Errorf(4, "UserService.Register: %s", err.Error())
 		s.Repository.RollBack()
 		return model.User{}, err
 	}
@@ -116,7 +118,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 
 	err = s.RepoUser.WitchTX(tx).Save(&user)
 	if err != nil {
-		fmt.Println("girdi 3")
+		logger.Errorf(4, "UserService.Register: %s", err.Error())
 		s.Repository.RollBack()
 		return model.User{}, err
 	}
@@ -129,6 +131,7 @@ func (s UserService) Update(req request.UserUpdate) error {
 
 	user, err := s.RepoUser.Get(req.ID)
 	if err != nil {
+		logger.Errorf(4, "UserService.Update: %s", err.Error())
 		return err
 	}
 
@@ -140,6 +143,9 @@ func (s UserService) Update(req request.UserUpdate) error {
 	user.Birthday = bDate
 
 	err = s.RepoUser.Update(&user)
+	if err != nil {
+		logger.Errorf(4, "UserService.Update: %s", err.Error())
+	}
 	return err
 }
 
@@ -168,16 +174,19 @@ func (s UserService) ChangePasswordForCode(c *gin.Context, req request.UserChang
 	ip := c.ClientIP()
 
 	if !cache.Exists(key) {
+		logger.Warnf(4, "UserService.ChangePasswordForCode: %s", "kod geçersiz")
 		return errors.New("Lütfen kayıtlı bir kodunuzu giriniz")
 	}
 
 	data := cache.GetHashCache(key)
 
 	if data["code"] != req.Code {
+		logger.Warnf(4, "UserService.ChangePasswordForCode: %s", "kod doğru değil")
 		return errors.New("kod doğrulanmadı")
 	}
 
 	if data["ip"] != ip {
+		logger.Warnf(4, "UserService.ChangePasswordForCode: %s", "ip doğru değil")
 		return errors.New("kod doğrulanmadı")
 	}
 
@@ -185,6 +194,7 @@ func (s UserService) ChangePasswordForCode(c *gin.Context, req request.UserChang
 
 	user, err := s.RepoUser.GetByPhone(req.Phone)
 	if err != nil {
+		logger.Errorf(4, "UserService.ChangePasswordForCode: %s", err.Error())
 		return err
 	}
 
@@ -192,6 +202,7 @@ func (s UserService) ChangePasswordForCode(c *gin.Context, req request.UserChang
 
 	err = s.RepoUser.Update(&user)
 	if err != nil {
+		logger.Errorf(4, "UserService.ChangePasswordForCode: %s", err.Error())
 		return err
 	}
 
@@ -204,15 +215,22 @@ func (s UserService) ChangePassword(req request.UserChangePassword) error {
 
 	user, err := s.RepoUser.Get(auth.ID)
 	if err != nil {
+		logger.Errorf(4, "UserService.ChangePassword: %s", err.Error())
 		return err
 	}
 
-	password, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 4)
+	password, err := bcrypt.GenerateFromPassword([]byte(req.Password), 4)
+
+	if err != nil {
+		logger.Errorf(4, "UserService.ChangePassword: %s", err.Error())
+		return err
+	}
 
 	user.Password = string(password)
 
 	err = s.RepoUser.Update(&user)
 	if err != nil {
+		logger.Errorf(4, "UserService.ChangePassword: %s", err.Error())
 		return err
 	}
 
