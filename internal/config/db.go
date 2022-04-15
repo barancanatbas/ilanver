@@ -8,15 +8,9 @@ import (
 )
 
 var DB *gorm.DB
+var ElasticDB *ElasticSearch
 
 func Init() {
-
-	// godotenv.Load(".env")
-
-	// USER := os.Getenv("USER")
-	// PASSWORD := os.Getenv("PASSWORD")
-	// HOST := os.Getenv("HOST")
-	// DBNAME := os.Getenv("DBNAME")
 
 	dsn := "root:mysql123@tcp(127.0.0.1:3306)/dbilanver2?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -27,8 +21,12 @@ func Init() {
 
 	DB = db
 
+	// redis config
 	Pool = NewPool()
-	//cleanupHook()
+
+	// elastic config
+	ElasticDB, err = NewElastic([]string{"http://localhost:9200"})
+
 }
 
 func Migrate() {

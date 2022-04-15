@@ -14,7 +14,7 @@ func main() {
 	r := gin.Default()
 	r.Use(middleware.Limitter())
 
-	router.Init(config.DB, r)
+	router.Init(config.DB, config.ElasticDB, r)
 
 	r.Run()
 }
