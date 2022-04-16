@@ -24,10 +24,8 @@ func SetFromCache(key string, list interface{}, ex uint64) {
 	if err != nil {
 		fmt.Println("json converter")
 	}
-	val, err := redis.Int64(client.Do("set", key, string(jsondata), "ex", ex))
-	if err != nil && val <= 0 {
-		fmt.Println("set redis")
-	}
+	redis.Int64(client.Do("set", key, string(jsondata), "ex", ex))
+
 }
 
 func SetFromCacheNoEx(key string, list interface{}) {
@@ -37,8 +35,6 @@ func SetFromCacheNoEx(key string, list interface{}) {
 	if err != nil {
 		fmt.Println("json converter")
 	}
-	val, err := redis.Int64(client.Do("set", key, string(jsondata)))
-	if err != nil && val <= 0 {
-		fmt.Println("set redis")
-	}
+	redis.Int64(client.Do("set", key, string(jsondata)))
+
 }
