@@ -3,6 +3,7 @@ package main
 import (
 	config "ilanver/internal/config"
 	"ilanver/internal/middleware"
+	"ilanver/internal/queue"
 	"ilanver/internal/router"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,9 @@ func main() {
 	config.Migrate(config.DB)
 	r := gin.Default()
 	r.Use(middleware.Limitter())
+
+	// şuanda microservis olmadığında veya başka bir servis yapımız olmadığı için bu şekilde kullandık.
+	go queue.Consume("insertProduct")
 
 	router.Init(config.DB, config.ElasticDB, r)
 
