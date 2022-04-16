@@ -27,3 +27,11 @@ type ProductState struct {
 	gorm.Model
 	State string
 }
+
+type ProductElastic struct {
+	ID          uint   `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Price       uint   `json:"price"`
+	Category    string `json:"category"`
+}
