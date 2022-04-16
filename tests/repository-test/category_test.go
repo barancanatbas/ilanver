@@ -11,8 +11,8 @@ import (
 )
 
 func TestInsertMainCategory(t *testing.T) {
-	config.Init()
-	repo := repository.NewCategoryRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewCategoryRepository(config.DBTest)
 
 	category := model.Category{
 		CategoryName: "test category",
@@ -25,8 +25,8 @@ func TestInsertMainCategory(t *testing.T) {
 }
 
 func TestInsertChildCategory(t *testing.T) {
-	config.Init()
-	repo := repository.NewCategoryRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewCategoryRepository(config.DBTest)
 
 	category := model.Category{
 		CategoryName: "test category",
@@ -48,8 +48,8 @@ func TestInsertChildCategory(t *testing.T) {
 }
 
 func TestGetMainCategories(t *testing.T) {
-	config.Init()
-	repo := repository.NewCategoryRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewCategoryRepository(config.DBTest)
 
 	_, err := repo.GetAll()
 
@@ -58,8 +58,8 @@ func TestGetMainCategories(t *testing.T) {
 }
 
 func TestGetSubCategories(t *testing.T) {
-	config.Init()
-	repo := repository.NewCategoryRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewCategoryRepository(config.DBTest)
 
 	category := model.Category{
 		CategoryName: "test category",
@@ -90,8 +90,8 @@ func TestGetSubCategories(t *testing.T) {
 }
 
 func TestUpdateCategory(t *testing.T) {
-	config.Init()
-	repo := repository.NewCategoryRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewCategoryRepository(config.DBTest)
 
 	category := model.Category{
 		CategoryName: "test category",

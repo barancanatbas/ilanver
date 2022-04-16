@@ -10,10 +10,10 @@ import (
 )
 
 func TestInsertDetail(t *testing.T) {
-	config.Init()
-	repoDetail := repository.NewUserDetailRepository(config.DB)
+	config.InitTest()
+	repoDetail := repository.NewUserDetailRepository(config.DBTest)
 
-	repoAddress := repository.NewAddressRepository(config.DB)
+	repoAddress := repository.NewAddressRepository(config.DBTest)
 
 	// save address
 	address := model.Adress{
@@ -38,10 +38,10 @@ func TestInsertDetail(t *testing.T) {
 }
 
 func TestGetByIdDetail(t *testing.T) {
-	config.Init()
-	repoDetail := repository.NewUserDetailRepository(config.DB)
+	config.InitTest()
+	repoDetail := repository.NewUserDetailRepository(config.DBTest)
 
-	repoAddress := repository.NewAddressRepository(config.DB)
+	repoAddress := repository.NewAddressRepository(config.DBTest)
 
 	// save address
 	address := model.Adress{

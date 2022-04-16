@@ -10,8 +10,8 @@ import (
 )
 
 func TestPstateGetAll(t *testing.T) {
-	config.Init()
-	repo := repository.NewProductStateRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewProductStateRepository(config.DBTest)
 
 	_, err := repo.GetAll()
 
@@ -19,8 +19,8 @@ func TestPstateGetAll(t *testing.T) {
 }
 
 func TestInsertPstate(t *testing.T) {
-	config.Init()
-	repo := repository.NewProductStateRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewProductStateRepository(config.DBTest)
 
 	pstate := model.ProductState{
 		State: "test product state",
@@ -32,8 +32,8 @@ func TestInsertPstate(t *testing.T) {
 }
 
 func TestGetByIDPstate(t *testing.T) {
-	config.Init()
-	repo := repository.NewProductStateRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewProductStateRepository(config.DBTest)
 
 	pstate := model.ProductState{
 		State: "test product state",
@@ -51,8 +51,8 @@ func TestGetByIDPstate(t *testing.T) {
 }
 
 func TestUpdatePstate(t *testing.T) {
-	config.Init()
-	repo := repository.NewProductStateRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewProductStateRepository(config.DBTest)
 
 	pstate := model.ProductState{
 		State: "test product state",
@@ -76,8 +76,8 @@ func TestUpdatePstate(t *testing.T) {
 }
 
 func TestDeletePstate(t *testing.T) {
-	config.Init()
-	repo := repository.NewProductStateRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewProductStateRepository(config.DBTest)
 
 	pstate := model.ProductState{
 		State: "test product state",

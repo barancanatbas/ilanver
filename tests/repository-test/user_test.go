@@ -14,11 +14,11 @@ import (
 
 func TestInsertUser(t *testing.T) {
 
-	config.Init()
+	config.InitTest()
 
-	repoAddress := repository.NewAddressRepository(config.DB)
-	repoDetail := repository.NewUserDetailRepository(config.DB)
-	repoUser := repository.NewUserRepository(config.DB)
+	repoAddress := repository.NewAddressRepository(config.DBTest)
+	repoDetail := repository.NewUserDetailRepository(config.DBTest)
+	repoUser := repository.NewUserRepository(config.DBTest)
 
 	// save address
 	address := model.Adress{
@@ -59,11 +59,11 @@ func TestInsertUser(t *testing.T) {
 
 func TestLoginUser(t *testing.T) {
 
-	config.Init()
+	config.InitTest()
 
-	repoAddress := repository.NewAddressRepository(config.DB)
-	repoDetail := repository.NewUserDetailRepository(config.DB)
-	repoUser := repository.NewUserRepository(config.DB)
+	repoAddress := repository.NewAddressRepository(config.DBTest)
+	repoDetail := repository.NewUserDetailRepository(config.DBTest)
+	repoUser := repository.NewUserRepository(config.DBTest)
 
 	// save address
 	address := model.Adress{
@@ -111,11 +111,11 @@ func TestLoginUser(t *testing.T) {
 
 func TestGetByIDUser(t *testing.T) {
 
-	config.Init()
+	config.InitTest()
 
-	repoAddress := repository.NewAddressRepository(config.DB)
-	repoDetail := repository.NewUserDetailRepository(config.DB)
-	repoUser := repository.NewUserRepository(config.DB)
+	repoAddress := repository.NewAddressRepository(config.DBTest)
+	repoDetail := repository.NewUserDetailRepository(config.DBTest)
+	repoUser := repository.NewUserRepository(config.DBTest)
 
 	// save address
 	address := model.Adress{

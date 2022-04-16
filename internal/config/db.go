@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var DB, DBTest *gorm.DB
 var ElasticDB *ElasticSearch
 
 func Init() {
@@ -29,8 +29,26 @@ func Init() {
 
 }
 
-func Migrate() {
-	DB.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
+func InitTest() {
+	dsn := "root:mysql123@tcp(127.0.0.1:3306)/ilanverdb-test?charset=utf8mb4&parseTime=True&loc=Local"
+	dbTest, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	DBTest = dbTest
+
+	// redis config
+	Pool = NewPool()
+
+	// elastic config
+	ElasticDB, err = NewElastic([]string{"http://localhost:9200"})
+	//Migrate(DBTest)
+}
+
+func Migrate(db *gorm.DB) {
+	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
 		&model.User{},
 		&model.UserDetail{},
 		&model.Adress{},

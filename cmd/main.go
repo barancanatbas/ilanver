@@ -10,7 +10,7 @@ import (
 
 func main() {
 	config.Init()
-	config.Migrate()
+	config.Migrate(config.DB)
 	r := gin.Default()
 	r.Use(middleware.Limitter())
 

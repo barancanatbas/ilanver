@@ -10,8 +10,8 @@ import (
 )
 
 func TestInsertAddress(t *testing.T) {
-	config.Init()
-	repo := repository.NewAddressRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewAddressRepository(config.DBTest)
 
 	address := model.Adress{
 		Districtfk: 1,
@@ -24,8 +24,8 @@ func TestInsertAddress(t *testing.T) {
 }
 
 func TestGetById(t *testing.T) {
-	config.Init()
-	repo := repository.NewAddressRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewAddressRepository(config.DBTest)
 
 	address := model.Adress{
 		Districtfk: 1,
@@ -43,8 +43,8 @@ func TestGetById(t *testing.T) {
 }
 
 func TestUpdateAddress(t *testing.T) {
-	config.Init()
-	repo := repository.NewAddressRepository(config.DB)
+	config.InitTest()
+	repo := repository.NewAddressRepository(config.DBTest)
 
 	address := model.Adress{
 		Districtfk: 1,
