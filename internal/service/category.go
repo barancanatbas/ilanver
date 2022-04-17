@@ -94,7 +94,7 @@ func (c CategoryService) Delete(id string) error {
 	ids := findDeletedCategories(c.repoCategory, uint(idInt))
 	ids = append(ids, idInt)
 
-	err = c.repoCategory.DeleteWitchInQuery(ids)
+	err = c.repoCategory.DeleteWithInQuery(ids)
 	if err != nil {
 		logger.Errorf(4, "CategoryService.Delete: %v", err)
 	}

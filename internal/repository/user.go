@@ -11,7 +11,7 @@ type IUserRepo interface {
 	Save(user *model.User) error
 	Update(user *model.User) error
 	Get(id uint) (model.User, error)
-	WitchTX(db *gorm.DB) IUserRepo
+	WithTx(db *gorm.DB) IUserRepo
 	GetByPhone(phone string) (model.User, error)
 }
 
@@ -25,7 +25,7 @@ func NewUserRepository(tx *gorm.DB) IUserRepo {
 	}
 }
 
-func (u UserRepo) WitchTX(db *gorm.DB) IUserRepo {
+func (u UserRepo) WithTx(db *gorm.DB) IUserRepo {
 	u.tx = db
 
 	return u

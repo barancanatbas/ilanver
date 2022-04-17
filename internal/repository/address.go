@@ -9,7 +9,7 @@ import (
 type IAddressRepo interface {
 	Save(address *model.Adress) error
 	GetByID(id uint) (model.Adress, error)
-	WitchTX(db *gorm.DB) IAddressRepo
+	WithTx(db *gorm.DB) IAddressRepo
 	Update(address *model.Adress) error
 }
 
@@ -23,7 +23,7 @@ func NewAddressRepository(tx *gorm.DB) IAddressRepo {
 	}
 }
 
-func (a AddressRepo) WitchTX(db *gorm.DB) IAddressRepo {
+func (a AddressRepo) WithTx(db *gorm.DB) IAddressRepo {
 	a.tx = db
 
 	return a

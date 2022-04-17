@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,8 +20,8 @@ type IUserService interface {
 	Login(req request.UserLogin) (model.User, string, error)
 	Register(req request.UserRegister) (model.User, error)
 	Update(req request.UserUpdate) error
-	LostPassword(c *gin.Context, req request.UserLostPassword) error
-	ChangePasswordForCode(c *gin.Context, req request.UserChangePasswordForCode) error
+	LostPassword(ip string, req request.UserLostPassword) error
+	ChangePasswordForCode(ip string, req request.UserChangePasswordForCode) error
 	ChangePassword(req request.UserChangePassword) error
 }
 
@@ -84,7 +83,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 	// create transaction for mysql
 	tx := s.Repository.CreateTX()
 
-	err := s.RepoAddress.WitchTX(tx).Save(&address)
+	err := s.RepoAddress.WithTx(tx).Save(&address)
 	if err != nil {
 		logger.Errorf(4, "UserService.Register: %s", err.Error())
 		s.Repository.RollBack()
@@ -95,7 +94,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 		Adressfk: address.ID,
 	}
 
-	err = s.RepoUserDetail.WitchTX(tx).Save(&userDetail)
+	err = s.RepoUserDetail.WithTx(tx).Save(&userDetail)
 	if err != nil {
 		logger.Errorf(4, "UserService.Register: %s", err.Error())
 		s.Repository.RollBack()
@@ -116,7 +115,7 @@ func (s UserService) Register(req request.UserRegister) (model.User, error) {
 
 	user.Password = string(password)
 
-	err = s.RepoUser.WitchTX(tx).Save(&user)
+	err = s.RepoUser.WithTx(tx).Save(&user)
 	if err != nil {
 		logger.Errorf(4, "UserService.Register: %s", err.Error())
 		s.Repository.RollBack()
@@ -149,10 +148,9 @@ func (s UserService) Update(req request.UserUpdate) error {
 	return err
 }
 
-func (s UserService) LostPassword(c *gin.Context, req request.UserLostPassword) error {
+func (s UserService) LostPassword(ip string, req request.UserLostPassword) error {
 
 	code := helpers.RandNumber(1000, 9999)
-	ip := c.ClientIP()
 
 	key := "lostPassword:" + req.Phone
 
@@ -168,10 +166,9 @@ func (s UserService) LostPassword(c *gin.Context, req request.UserLostPassword) 
 	return nil
 }
 
-func (s UserService) ChangePasswordForCode(c *gin.Context, req request.UserChangePasswordForCode) error {
+func (s UserService) ChangePasswordForCode(ip string, req request.UserChangePasswordForCode) error {
 
 	key := "lostPassword:" + req.Phone
-	ip := c.ClientIP()
 
 	if !cache.Exists(key) {
 		logger.Warnf(4, "UserService.ChangePasswordForCode: %s", "kod geçersiz")

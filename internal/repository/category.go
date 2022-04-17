@@ -13,7 +13,7 @@ type ICategoryRepository interface {
 	GetByID(id int) (model.Category, error)
 	Update(category model.Category) error
 	Delete(id uint) error
-	DeleteWitchInQuery(data []int) error
+	DeleteWithInQuery(data []int) error
 	//Paginate(page int, status int) (helpers.Paginate, error)
 }
 
@@ -77,6 +77,6 @@ func (c CategoryRepository) Delete(id uint) error {
 	return c.db.Delete(&model.Category{}, id).Error
 }
 
-func (c CategoryRepository) DeleteWitchInQuery(data []int) error {
+func (c CategoryRepository) DeleteWithInQuery(data []int) error {
 	return c.db.Where("id IN (?)", data).Delete(&model.Category{}).Error
 }

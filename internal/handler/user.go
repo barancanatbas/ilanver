@@ -91,7 +91,7 @@ func (h UserHandler) LostPasswordConfrim(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.LostPassword(c, req)
+	err := h.Service.LostPassword(c.ClientIP(), req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -109,7 +109,7 @@ func (h UserHandler) ChangePasswordForCode(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.ChangePasswordForCode(c, req)
+	err := h.Service.ChangePasswordForCode(c.ClientIP(), req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

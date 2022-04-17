@@ -9,7 +9,7 @@ import (
 type IUserDetailRepo interface {
 	Save(detail *model.UserDetail) error
 	GetByID(id uint) (model.UserDetail, error)
-	WitchTX(db *gorm.DB) IUserDetailRepo
+	WithTx(db *gorm.DB) IUserDetailRepo
 }
 
 type UserDetailRepo struct {
@@ -22,7 +22,7 @@ func NewUserDetailRepository(tx *gorm.DB) IUserDetailRepo {
 	}
 }
 
-func (u UserDetailRepo) WitchTX(db *gorm.DB) IUserDetailRepo {
+func (u UserDetailRepo) WithTx(db *gorm.DB) IUserDetailRepo {
 	u.tx = db
 
 	return u
