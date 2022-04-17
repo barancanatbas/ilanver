@@ -48,5 +48,5 @@ func (h *ProductHandler) Save(c *gin.Context) {
 		c.JSON(500, err)
 		return
 	}
-	c.JSON(200, helpers.BasicReturn(200, product))
+	c.JSON(200, helpers.BasicReturn(200, "Başarılı."))
 }

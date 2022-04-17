@@ -104,5 +104,7 @@ func (p ProductService) Save(req request.InsertProduct) error {
 		logger.Warnf(4, "ProductService.Save: %v", err)
 	}
 
+	p.repository.Commit()
+
 	return nil
 }

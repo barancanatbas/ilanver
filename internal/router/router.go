@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/json"
 	"ilanver/internal/api/address"
 	"ilanver/internal/api/category"
 	"ilanver/internal/api/product"
@@ -9,8 +8,6 @@ import (
 	"ilanver/internal/api/user"
 	"ilanver/internal/config"
 	"ilanver/internal/middleware"
-	"ilanver/internal/model"
-	"ilanver/internal/queue"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -20,24 +17,8 @@ func Init(tx *gorm.DB, elasticDb *config.ElasticSearch, router *gin.Engine) {
 	userHandler := user.Init(tx)
 	addressHandler := address.Init(tx)
 	categoryHandler := category.Init(tx)
-	productHandler := product.Init(tx, elasticDb)
+	productHandler := product.Init(tx)
 	productState := productstate.Init(tx)
-
-	router.GET("/a", func(ctx *gin.Context) {
-
-		p := model.ProductElastic{
-			Title: "test",
-		}
-
-		data, _ := json.Marshal(p)
-
-		err := queue.NewQueue().Publish("insertProduct", data)
-		if err != nil {
-			ctx.JSON(500, err)
-			return
-		}
-		ctx.JSON(200, "a")
-	})
 
 	router.POST("/login", userHandler.Login)
 	router.POST("/register", userHandler.Register)
@@ -66,5 +47,6 @@ func Init(tx *gorm.DB, elasticDb *config.ElasticSearch, router *gin.Engine) {
 	auth.GET("/product/states/:id", productState.Get)
 
 	auth.GET("/product/:id", productHandler.GetByID)
+	auth.POST("/product", productHandler.Save)
 
 }

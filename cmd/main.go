@@ -16,7 +16,7 @@ func main() {
 	r.Use(middleware.Limitter())
 
 	// şuanda microservis olmadığında veya başka bir servis yapımız olmadığı için bu şekilde kullandık.
-	go queue.Consume("insertProduct")
+	go queue.ConsumeInsertProduct("insertProduct")
 
 	router.Init(config.DB, config.ElasticDB, r)
 

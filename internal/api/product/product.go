@@ -1,7 +1,6 @@
 package product
 
 import (
-	"ilanver/internal/config"
 	"ilanver/internal/handler"
 	"ilanver/internal/repository"
 	"ilanver/internal/service"
@@ -9,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Init(tx *gorm.DB, elasticDb *config.ElasticSearch) handler.IProductHandler {
+func Init(tx *gorm.DB) handler.IProductHandler {
 	repoProduct := repository.NewProductRepository(tx)
 	repo := repository.NewRepository(tx)
 	repoAddress := repository.NewAddressRepository(tx)

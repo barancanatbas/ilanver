@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"ilanver/internal/config"
 	"ilanver/internal/model"
+	"ilanver/internal/repository"
+	"strconv"
+
+	"ilanver/pkg/logger"
 
 	"github.com/streadway/amqp"
 )
@@ -60,7 +64,7 @@ func (q *Queue) Publish(queueName string, message []byte) error {
 	return nil
 }
 
-func Consume(queueName string) {
+func ConsumeInsertProduct(queueName string) {
 
 	connection := config.Connect()
 	defer connection.Close()
@@ -93,16 +97,24 @@ func Consume(queueName string) {
 		panic(err)
 	}
 
+	repo := repository.NewProductElasticRepository(config.ElasticDB)
+
 	forever := make(chan bool)
 	go func() {
 		for d := range msg {
 			product := model.ProductElastic{}
 			json.Unmarshal(d.Body, &product)
-			fmt.Println("consumer : " + product.Title)
+
+			id := strconv.Itoa(int(product.ID))
+
+			err := repo.Save(d.Body, id)
+			if err != nil {
+				logger.Errorf(4, "error save product to elastic: %v", err)
+			}
 		}
 	}()
 
-	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
+	fmt.Println("listening message for insert product ...")
 	<-forever
 }
 
