@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"ilanver/internal/config"
 	"ilanver/internal/model"
 
@@ -17,6 +18,7 @@ type document struct {
 type IProductElasticRepository interface {
 	GetByID(id string) (model.ProductElastic, error)
 	Save(product []byte, id string) error
+	Update(product []byte, id string) error
 }
 
 type ProductElasticRepository struct {
@@ -57,6 +59,20 @@ func (p *ProductElasticRepository) Save(product []byte, id string) error {
 		Index:      "product",
 		DocumentID: id,
 		Body:       bytes.NewReader(product),
+	}
+
+	res, err := req.Do(ctx, p.elasticDb.Client)
+	defer res.Body.Close()
+
+	return err
+}
+
+func (p *ProductElasticRepository) Update(product []byte, id string) error {
+	ctx := context.Background()
+	req := esapi.UpdateRequest{
+		Index:      "product",
+		DocumentID: id,
+		Body:       bytes.NewReader([]byte(fmt.Sprintf(`{"doc":%s}`, string(product)))),
 	}
 
 	res, err := req.Do(ctx, p.elasticDb.Client)

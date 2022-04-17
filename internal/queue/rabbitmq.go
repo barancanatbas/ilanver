@@ -118,6 +118,60 @@ func ConsumeInsertProduct(queueName string) {
 	<-forever
 }
 
+func ConsumeUpdateProduct(queueName string) {
+
+	connection := config.Connect()
+	defer connection.Close()
+	channel, err := connection.Channel()
+	if err != nil {
+		return
+	}
+	defer channel.Close()
+
+	err = channel.Qos(
+		1,     // prefetch count
+		0,     // prefetch size
+		false, // global
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	msg, err := channel.Consume(
+		queueName, // queue
+		"",        // consumer
+		true,      // auto-ack
+		false,     // exclusive
+		false,     // no-local
+		false,     // no-wait
+		nil,       // args
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	repo := repository.NewProductElasticRepository(config.ElasticDB)
+
+	forever := make(chan bool)
+	go func() {
+		for d := range msg {
+			product := model.ProductElastic{}
+			json.Unmarshal(d.Body, &product)
+
+			id := strconv.Itoa(int(product.ID))
+
+			err := repo.Update(d.Body, id)
+			if err != nil {
+				logger.Errorf(4, "error update product to elastic: %v", err)
+			}
+		}
+	}()
+
+	fmt.Println("listening message for update product ...")
+	<-forever
+}
+
 func declareQueue(channel *amqp.Channel, queueName string) (amqp.Queue, error) {
 	q, err := channel.QueueDeclare(
 		queueName, // name
