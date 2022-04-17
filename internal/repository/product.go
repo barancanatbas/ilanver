@@ -10,7 +10,8 @@ type IProductRepository interface {
 	GetByID(id int) (model.Product, error)
 	Save(product *model.Product) error
 	SaveDetail(product *model.ProductDetail) error
-	WitchTX(db *gorm.DB) IProductRepository
+	GetDetail(id uint, productD *model.ProductDetail) error
+	WithTx(db *gorm.DB) IProductRepository
 }
 
 type ProductRepository struct {
@@ -23,7 +24,7 @@ func NewProductRepository(db *gorm.DB) IProductRepository {
 	}
 }
 
-func (a *ProductRepository) WitchTX(db *gorm.DB) IProductRepository {
+func (a *ProductRepository) WithTx(db *gorm.DB) IProductRepository {
 	a.db = db
 
 	return a
@@ -41,5 +42,10 @@ func (p *ProductRepository) SaveDetail(product *model.ProductDetail) error {
 
 func (p *ProductRepository) Save(product *model.Product) error {
 	err := p.db.Save(product).Error
+	return err
+}
+
+func (p *ProductRepository) GetDetail(id uint, productD *model.ProductDetail) error {
+	err := p.db.Where("id = ?", id).First(productD).Error
 	return err
 }

@@ -14,6 +14,7 @@ import (
 type IProductService interface {
 	GetByID(id string) (model.Product, error)
 	Save(req request.InsertProduct) error
+	Update(req request.UpdateProduct) error
 }
 
 type ProductService struct {
@@ -51,7 +52,7 @@ func (p ProductService) Save(req request.InsertProduct) error {
 		Districtfk: uint(req.Districtfk),
 	}
 
-	err := p.repoAddress.WitchTX(tx).Save(&address)
+	err := p.repoAddress.WithTx(tx).Save(&address)
 	if err != nil {
 		p.repository.RollBack()
 		logger.Errorf(4, "ProductService.Save: %v", err)
@@ -66,7 +67,7 @@ func (p ProductService) Save(req request.InsertProduct) error {
 		Categoryfk:     uint(req.CategoryFk),
 	}
 
-	err = p.repoProduct.WitchTX(tx).SaveDetail(&pDetail)
+	err = p.repoProduct.WithTx(tx).SaveDetail(&pDetail)
 	if err != nil {
 		p.repository.RollBack()
 		logger.Errorf(4, "ProductService.Save: %v", err)
@@ -79,7 +80,7 @@ func (p ProductService) Save(req request.InsertProduct) error {
 		ProductDetailfk: pDetail.ID,
 	}
 
-	err = p.repoProduct.WitchTX(tx).Save(&product)
+	err = p.repoProduct.WithTx(tx).Save(&product)
 	if err != nil {
 		p.repository.RollBack()
 		logger.Errorf(4, "ProductService.Save: %v", err)
@@ -105,6 +106,57 @@ func (p ProductService) Save(req request.InsertProduct) error {
 	}
 
 	p.repository.Commit()
+
+	return nil
+}
+
+func (p ProductService) Update(req request.UpdateProduct) error {
+
+	product, err := p.repoProduct.GetByID(int(req.ID))
+
+	tx := p.repository.CreateTX()
+
+	product.Title = req.Title
+
+	err = p.repoProduct.WithTx(tx).Save(&product)
+	if err != nil {
+		p.repository.RollBack()
+		logger.Errorf(4, "ProductService.Update: %v", err)
+		return err
+	}
+
+	product.ProductDetail.Description = req.ProductDescription
+	product.ProductDetail.Price = req.Price
+	product.ProductDetail.ProductStatefk = uint(req.ProductStateFk)
+	product.ProductDetail.Categoryfk = uint(req.CategoryFk)
+
+	err = p.repoProduct.WithTx(tx).SaveDetail(&product.ProductDetail)
+	if err != nil {
+		p.repository.RollBack()
+		logger.Errorf(4, "ProductService.Update: %v", err)
+		return err
+	}
+
+	p.repository.Commit()
+
+	// burada rabbitmq ya istek atacak ve elasticsearchdeki verileri güncelleyecek.
+
+	productElastic := model.ProductElastic{
+		ID:          product.ID,
+		Title:       product.Title,
+		Description: product.ProductDetail.Description,
+		Price:       product.ProductDetail.Price,
+	}
+
+	data, err := json.Marshal(productElastic)
+	if err != nil {
+		logger.Warnf(4, "ProductService.Save: %v", err)
+	}
+
+	err = queue.NewQueue().Publish("updateProduct", data)
+	if err != nil {
+		logger.Warnf(4, "ProductService.Save: %v", err)
+	}
 
 	return nil
 }

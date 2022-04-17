@@ -24,7 +24,7 @@ func NewRepository(tx *gorm.DB) IRepository {
 }
 
 func (r *Repository) CreateTX() *gorm.DB {
-	r.tx = r.tx.Debug().Begin()
+	r.tx = r.tx.Begin()
 	return r.tx
 }
 

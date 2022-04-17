@@ -48,5 +48,6 @@ func Init(tx *gorm.DB, elasticDb *config.ElasticSearch, router *gin.Engine) {
 
 	auth.GET("/product/:id", productHandler.GetByID)
 	auth.POST("/product", productHandler.Save)
+	auth.PUT("/product", productHandler.Update)
 
 }

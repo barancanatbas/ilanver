@@ -12,6 +12,7 @@ type IProductHandler interface {
 	//GetAll(c *gin.Context)
 	GetByID(c *gin.Context)
 	Save(c *gin.Context)
+	Update(c *gin.Context)
 }
 
 type ProductHandler struct {
@@ -44,6 +45,22 @@ func (h *ProductHandler) Save(c *gin.Context) {
 	}
 
 	err = h.service.Save(product)
+	if err != nil {
+		c.JSON(500, err)
+		return
+	}
+	c.JSON(200, helpers.BasicReturn(200, "Başarılı."))
+}
+
+func (h *ProductHandler) Update(c *gin.Context) {
+	var product request.UpdateProduct
+	err := c.BindJSON(&product)
+	if err != nil {
+		c.JSON(500, err)
+		return
+	}
+
+	err = h.service.Update(product)
 	if err != nil {
 		c.JSON(500, err)
 		return
