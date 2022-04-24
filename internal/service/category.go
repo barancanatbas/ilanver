@@ -9,7 +9,7 @@ import (
 )
 
 type ICategoryService interface {
-	GetAll(page string) (interface{}, error)
+	GetAll() (interface{}, error)
 	GetSubCategories(id string) ([]model.Category, error)
 	Insert(req request.InsertCategory) error
 	Update(req request.UpdateCategory) error
@@ -28,7 +28,7 @@ func NewCategoryService(repoCategory repository.ICategoryRepository, repository 
 	}
 }
 
-func (c CategoryService) GetAll(page string) (interface{}, error) {
+func (c CategoryService) GetAll() (interface{}, error) {
 	categories, err := c.repoCategory.GetAll()
 
 	if err != nil {

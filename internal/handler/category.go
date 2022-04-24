@@ -28,9 +28,9 @@ func NewCategoryHandler(service service.ICategoryService) ICategoryHandler {
 }
 
 func (h *CategoryHandler) GetAll(c *gin.Context) {
-	page := c.Query("page")
+	//page := c.Query("page")
 
-	categories, err := h.service.GetAll(page)
+	categories, err := h.service.GetAll()
 	if err != nil {
 		c.JSON(500, helpers.BasicError(400, err))
 		return
