@@ -1,22 +1,34 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"database/sql"
+	"time"
+)
 
 type Adress struct {
-	gorm.Model
-	Detail     string   `json:"detail"`
-	Districtfk uint     `gorm:"column:districtfk" json:"districtfk"`
-	District   District `gorm:"foreignkey:districtfk"`
+	ID         uint `gorm:"primarykey"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  sql.NullTime `gorm:"index"`
+	Detail     string       `json:"detail"`
+	Districtfk uint         `gorm:"column:districtfk" json:"districtfk"`
+	District   District     `gorm:"foreignkey:districtfk"`
 }
 
 type District struct {
-	gorm.Model
-	District   string   `json:"district"`
-	Provincefk uint     `gorm:"column:provincefk" json:"province"`
-	Province   Province `gorm:"foreignkey:provincefk"`
+	ID         uint `gorm:"primarykey"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  sql.NullTime `gorm:"index"`
+	District   string       `json:"district"`
+	Provincefk uint         `gorm:"column:provincefk" json:"province"`
+	Province   Province     `gorm:"foreignkey:provincefk"`
 }
 
 type Province struct {
-	gorm.Model
-	Province string
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt sql.NullTime `gorm:"index"`
+	Province  string
 }
