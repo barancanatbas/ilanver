@@ -1,0 +1,15 @@
+{
+  "name": "insertproductservice",
+  "version": "1.0.0",
+  "description": "insert product in elesticrearch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.0",
+    "elasticsearch": "^16.7.3"
+  }
+}

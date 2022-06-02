@@ -1,0 +1,1 @@
+[2022-05-12 21:11:10] ERROR UserService.Register: Error 1062: Duplicate entry '5551755414' for key 'users.phone' file=D:/golang projeleri/sahibinden/internal/service/user.go function=ilanver/internal/service.UserService.Register line=120
